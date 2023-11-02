@@ -1,4 +1,4 @@
-# nekoy's layout
+# nekoy's lily58 layout
 
 ## Key features
 
