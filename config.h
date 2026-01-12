@@ -22,12 +22,18 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 /* Select hand configuration */
 
-#define MASTER_LEFT
-// #define MASTER_RIGHT
-// #define EE_HANDS
+#if defined(SIDE_LEFT)
+    #define MASTER_LEFT
+#elif defined(SIDE_RIGHT)
+    #define MASTER_RIGHT
+#else 
+    #error "-e SIDE=LEFT or -e SIDE=RIGHT has to be defined"
+#endif
+
 
 #define QUICK_TAP_TERM 0
 #define TAPPING_TERM 100
+#define SPLIT_USB_DETECT
 
 #undef RGBLED_NUM
 #define RGBLIGHT_EFFECT_BREATHING
