@@ -2,7 +2,7 @@
 
 enum layer_number {
   _QWERTY = 0,
-  _COLEMAK,
+  _COLEMAK_DHM,
   _GAMING,
   _SYMBOL,
   _NAVI,
@@ -34,26 +34,26 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   KC_LSFT,  KC_Z,   KC_X,    KC_C,    KC_V,    KC_B, KC_LBRC,  KC_RBRC,  KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, KC_RSFT,
                         KC_LALT, TT(_SYMBOL), KC_LGUI, KC_SPC, KC_ENT, KC_BSPC, TT(_NAVI), KC_RALT
 ),
-/* COLEMAK 
+/* COLEMAK_DHM 
  * ,-----------------------------------------.                    ,-----------------------------------------.
  * | ESC  |   1  |   2  |   3  |   4  |   5  |                    |   6  |   7  |   8  |   9  |   0  |  =   |
  * |------+------+------+------+------+------|                    |------+------+------+------+------+------|
- * | Tab  |   Q  |   W  |   F  |   P  |   G  |                    |   J  |   L  |   U  |   Y  |   ;  |  -   |
+ * | Tab  |   Q  |   W  |   F  |   P  |   B  |                    |   J  |   L  |   U  |   Y  |   ;  |  -   |
  * |------+------+------+------+------+------|                    |------+------+------+------+------+------|
- * |LCTRL |   A  |   R  |   S  |   T  |   D  |-------.    ,-------|   H  |   N  |   E  |   I  |   O  |  '   |
+ * |LCTRL |   A  |   R  |   S  |   T  |   G  |-------.    ,-------|   M  |   N  |   E  |   I  |   O  |  '   |
  * |------+------+------+------+------+------|   [   |    |    ]  |------+------+------+------+------+------|
- * |LShift|   Z  |   X  |   C  |   V  |   B  |-------|    |-------|   K  |   M  |   ,  |   .  |   /  |RShift|
+ * |LShift|   Z  |   X  |   C  |   D  |   V  |-------|    |-------|   K  |   H  |   ,  |   .  |   /  |RShift|
  * `-----------------------------------------/       /     \      \-----------------------------------------'
  *                   | LAlt |SYMBOL|BackSP| /Space  /       \Enter \  | LGUI | NAVI | RAlt |
  *                   |      |      |      |/       /         \      \ |      |      |      |
  *                   `----------------------------'           '------''--------------------'
  */
 
- [_COLEMAK] = LAYOUT(
+ [_COLEMAK_DHM] = LAYOUT(
   KC_ESC,   KC_1,   KC_2,    KC_3,    KC_4,    KC_5,                     KC_6,    KC_7,    KC_8,    KC_9,    KC_0,    KC_EQL,
-  KC_TAB,   KC_Q,   KC_W,    KC_F,    KC_P,    KC_G,                     KC_J,    KC_L,    KC_U,    KC_Y,    KC_SCLN, KC_MINS,
-  KC_LCTL,  KC_A,   KC_R,    KC_S,    KC_T,    KC_D,                     KC_H,    KC_N,    KC_E,    KC_I,    KC_O,    KC_QUOT,
-  KC_LSFT,  KC_Z,   KC_X,    KC_C,    KC_V,    KC_B, KC_LBRC,  KC_RBRC,  KC_K,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, KC_RSFT,
+  KC_TAB,   KC_Q,   KC_W,    KC_F,    KC_P,    KC_B,                     KC_J,    KC_L,    KC_U,    KC_Y,    KC_SCLN, KC_MINS,
+  KC_LCTL,  KC_A,   KC_R,    KC_S,    KC_T,    KC_G,                     KC_M,    KC_N,    KC_E,    KC_I,    KC_O,    KC_QUOT,
+  KC_LSFT,  KC_Z,   KC_X,    KC_C,    KC_D,    KC_V, KC_LBRC,  KC_RBRC,  KC_K,    KC_H,    KC_COMM, KC_DOT,  KC_SLSH, KC_RSFT,
                         KC_LALT, TT(_SYMBOL), KC_LGUI, KC_SPC, KC_ENT, KC_BSPC, TT(_NAVI), KC_RALT
 ),
 /* GAMING
@@ -135,11 +135,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  *                   `----------------------------'           '------''--------------------'
  */
   [_ADJUST] = LAYOUT(
-  _______, _______, _______,     _______,      _______,     _______,                   _______, UG_HUEU, UG_HUED, _______, _______, _______,
-  _______, _______, _______,     KC_NUM,       KC_CAPS,     _______,                   _______, UG_SATU, UG_SATD, _______, _______, _______,
-  _______, _______, DF(_GAMING), DF(_COLEMAK), DF(_QWERTY), _______,                   _______, UG_VALU, UG_VALD, KC_VOLU, KC_VOLD, _______,
-  _______, _______, _______,     _______,      _______,     _______, _______, _______, _______, UG_TOGG, _______, _______, _______, _______,
-                                 _______,      _______,     _______, _______, _______, _______, _______, _______
+  _______, _______, _______,     _______,          _______,     _______,                   _______, UG_HUEU, UG_HUED, _______, _______, _______,
+  _______, _______, _______,     KC_NUM,           KC_CAPS,     _______,                   _______, UG_SATU, UG_SATD, _______, _______, _______,
+  _______, _______, DF(_GAMING), DF(_COLEMAK_DHM), DF(_QWERTY), _______,                   _______, UG_VALU, UG_VALD, KC_VOLU, KC_VOLD, _______,
+  _______, _______, _______,     _______,          _______,     _______, _______, _______, _______, UG_TOGG, _______, _______, _______, _______,
+                                 _______,          _______,     _______, _______, _______, _______, _______, _______
   )
 };
 

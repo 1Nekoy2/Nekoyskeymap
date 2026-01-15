@@ -2,7 +2,7 @@
 
 ## Key features
 
-- Qwerty, Colemak
+- Qwerty, Colemak-DHm
 - Dedicated gaming layer with arrow arrow cluster
 - Navigational layer with vim motions
 - Numberpad
