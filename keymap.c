@@ -2,11 +2,11 @@
 
 enum layer_number {
   _QWERTY = 0,
-  _COLEMAK,
+  _COLEMAK_DH,
   _GAMING,
   _SYMBOL,
   _NAVI,
-  _ADJUST,
+  _ADJUST
 };
 
 
@@ -49,7 +49,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  *                   `----------------------------'           '------''--------------------'
  */
 
- [_COLEMAK] = LAYOUT(
+ [_COLEMAK_DH] = LAYOUT(
   KC_ESC,   KC_1,   KC_2,    KC_3,    KC_4,    KC_5,                     KC_6,    KC_7,    KC_8,    KC_9,    KC_0,    KC_EQL,
   KC_TAB,   KC_Q,   KC_W,    KC_F,    KC_P,    KC_G,                     KC_J,    KC_L,    KC_U,    KC_Y,    KC_SCLN, KC_MINS,
   KC_LCTL,  KC_A,   KC_R,    KC_S,    KC_T,    KC_D,                     KC_H,    KC_N,    KC_E,    KC_I,    KC_O,    KC_QUOT,
@@ -126,7 +126,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * |------+------+------+------+------+------|                    |------+------+------+------+------+------|
  * |      |      |      |Numlc |Capslc|      |                    |      | SAT+ | SAT- |      |      |      |
  * |------+------+------+------+------+------|                    |------+------+------+------+------+------|
- * |      |      |GAMING|COLMAK|QWERTY|      |-------.    ,-------|      | BRI+ | BRI- | Vol+ | Vol- |      |
+ * |      |      |GAMING|COLEMK|QWERTY|      |-------.    ,-------|      | BRI+ | BRI- | Vol+ | Vol- |      |
  * |------+------+------+------+------+------|       |    |       |------+------+------+------+------+------|
  * |      |      |      |      |      |      |-------|    |-------|      |UG_TG |      |      |      |      |
  * `-----------------------------------------/       /     \      \-----------------------------------------'
@@ -135,11 +135,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  *                   `----------------------------'           '------''--------------------'
  */
   [_ADJUST] = LAYOUT(
-  _______, _______, _______,     _______,      _______,     _______,                   _______, UG_HUEU, UG_HUED, _______, _______, _______,
-  _______, _______, _______,     KC_NUM,       KC_CAPS,     _______,                   _______, UG_SATU, UG_SATD, _______, _______, _______,
-  _______, _______, DF(_GAMING), DF(_COLEMAK), DF(_QWERTY), _______,                   _______, UG_VALU, UG_VALD, KC_VOLU, KC_VOLD, _______,
-  _______, _______, _______,     _______,      _______,     _______, _______, _______, _______, UG_TOGG, _______, _______, _______, _______,
-                                 _______,      _______,     _______, _______, _______, _______, _______, _______
+  _______, _______, _______,     _______,          _______,      _______,                   _______, UG_HUEU, UG_HUED, _______, _______, _______,
+  _______, _______, _______,     KC_NUM,           KC_CAPS,      _______,                   _______, UG_SATU, UG_SATD, _______, _______, _______,
+  _______, _______, DF(_GAMING), PDF(_COLEMAK_DH), PDF(_QWERTY), _______,                   _______, UG_VALU, UG_VALD, KC_VOLU, KC_VOLD, _______,
+  _______, _______, _______,     _______,          _______,      _______, _______, _______, _______, UG_TOGG, _______, _______, _______, _______,
+                                 _______,          _______,      _______, _______, _______, _______, _______, _______
   )
 };
 
@@ -150,12 +150,16 @@ layer_state_t layer_state_set_user(layer_state_t state) {
 //SSD1306 OLED update loop, make sure to enable OLED_ENABLE=yes in rules.mk
 #ifdef OLED_ENABLE
 
+// Bongo cat animation start
+// under construction (waiting oleds to come in mail lol)
 enum anim_frames {
   _READY = 0,
+  _READY_BLINK,
   _LEFT_UP,
   _RIGHT_UP,
-  _WAITING,
+  _WAITING
 };
+// Bongo cat animation end
 
 oled_rotation_t oled_init_user(oled_rotation_t rotation) {
   if (!is_keyboard_master())
