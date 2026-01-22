@@ -30,12 +30,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     #error "-e SIDE=LEFT or -e SIDE=RIGHT has to be defined"
 #endif
 
+#define SPLIT_USB_DETECT
 
 #define QUICK_TAP_TERM 0
 #define TAPPING_TERM 100
-#define SPLIT_USB_DETECT
 
 #undef RGBLED_NUM
+
+//no backlight at the moment
+/*
 #define RGBLIGHT_EFFECT_BREATHING
 #define RGBLIGHT_EFFECT_RAINBOW_MOOD
 #define RGBLIGHT_EFFECT_RAINBOW_SWIRL
@@ -51,6 +54,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define RGBLIGHT_HUE_STEP 10
 #define RGBLIGHT_SAT_STEP 17
 #define RGBLIGHT_VAL_STEP 17
+*/
 
 // Underglow
 /*
