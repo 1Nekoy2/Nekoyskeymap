@@ -38,6 +38,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                         KC_LALT, TT(_SYMBOL), KC_LGUI, KC_SPC, KC_ENT, KC_BSPC, TT(_NAVI), KC_RALT
 ),
 /* COLEMAK DH
+/* COLEMAK DH
  * ,-----------------------------------------.                    ,-----------------------------------------.
  * | ESC  |   1  |   2  |   3  |   4  |   5  |                    |   6  |   7  |   8  |   9  |   0  |  =   |
  * |------+------+------+------+------+------|                    |------+------+------+------+------+------|
@@ -120,6 +121,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   _______, KC_DLR,   KC_P7,   KC_P8,   KC_P9,   KC_PSLS,                    _______, _______, _______, _______, _______, _______,
   _______, KC_PERC,  KC_P4,   KC_P5,   KC_P6,   KC_PAST,                    _______, _______, _______, _______, KC_PGUP, KC_PGDN,
   _______, _______,  KC_P1,   KC_P2,   KC_P3,   KC_PPLS,                    KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT, KC_HOME, KC_END,
+  _______, _______,  KC_P1,   KC_P2,   KC_P3,   KC_PPLS,                    KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT, KC_HOME, KC_END,
   KC_LSFT, KC_LCTL,  KC_PEQL, KC_P0,   KC_PDOT, KC_PMNS, KC_ENT,  _______,  _______, _______, _______, _______, _______, _______,
                              _______, _______, _______,  _______, _______,  _______, _______, _______
 ),
@@ -128,8 +130,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * |      |      |      |      |      |      |                    |      | HUE+ | HUE- |      |      |      |
  * |------+------+------+------+------+------|                    |------+------+------+------+------+------|
  * |      |      |SCRlc |Numlc |Capslc|      |                    |      | SAT+ | SAT- |      |      |      |
+ * |      |      |SCRlc |Numlc |Capslc|      |                    |      | SAT+ | SAT- |      |      |      |
  * |------+------+------+------+------+------|                    |------+------+------+------+------+------|
  * |      |      |GAMING|COLEMK|QWERTY|      |-------.    ,-------|      | BRI+ | BRI- | Vol+ | Vol- |      |
+ * |------+------+------+------+------+------| PLAY  |    |  MUTE |------+------+------+------+------+------|
+ * |      |      |      |      |      |      |-------|    |-------|      |UG TG | OLED |      |      |      |
  * |------+------+------+------+------+------| PLAY  |    |  MUTE |------+------+------+------+------+------|
  * |      |      |      |      |      |      |-------|    |-------|      |UG TG | OLED |      |      |      |
  * `-----------------------------------------/       /     \      \-----------------------------------------'
@@ -140,11 +145,15 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   [_ADJUST] = LAYOUT(
   _______, _______, _______,     _______,          _______,      _______,                   _______, UG_HUEU, UG_HUED, _______, _______, _______,
   _______, _______, KC_SCRL,     KC_NUM,           KC_CAPS,      _______,                   _______, UG_SATU, UG_SATD, _______, _______, _______,
+  _______, _______, KC_SCRL,     KC_NUM,           KC_CAPS,      _______,                   _______, UG_SATU, UG_SATD, _______, _______, _______,
   _______, _______, DF(_GAMING), PDF(_COLEMAK_DH), PDF(_QWERTY), _______,                   _______, UG_VALU, UG_VALD, KC_VOLU, KC_VOLD, _______,
+  _______, _______, _______,     _______,          _______,      _______, KC_MPLY, KC_MUTE, _______, UG_TOGG, KC_OLED, _______, _______, _______,
   _______, _______, _______,     _______,          _______,      _______, KC_MPLY, KC_MUTE, _______, UG_TOGG, KC_OLED, _______, _______, _______,
                                  _______,          _______,      _______, _______, _______, _______, _______, _______
   )
 };
+
+
 
 
 
@@ -154,6 +163,19 @@ layer_state_t layer_state_set_user(layer_state_t state) {
 
 //SSD1306 OLED update loop, make sure to enable OLED_ENABLE=yes in rules.mk
 #ifdef OLED_ENABLE
+
+bool oled_enabled = true;
+
+bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+switch (keycode) {
+case KC_OLED:
+    if (record->event.pressed) {
+            oled_enabled = !oled_enabled;  // toggle oled_enabled
+        }
+        break;
+    }
+    return true;
+}
 
 bool oled_enabled = true;
 
@@ -205,6 +227,13 @@ bool oled_task_user(void) {
     }
   }
   
+  if (!oled_enabled) {
+    if (is_oled_on()) {
+        oled_off()
+        return false
+    }
+  }
+  
   if (is_keyboard_left()) {
     // If you want to change the display of OLED, you need to change here
     oled_write_ln(read_layer_state(), false);
@@ -218,6 +247,22 @@ bool oled_task_user(void) {
   }
     return false;
 }
+
+void oled_render_boot(bool bootloader) {
+    oled_clear();
+    for (int i = 0; i < 16; i++) {
+        oled_set_cursor(0, i);
+        if (bootloader) {
+            oled_write_P(PSTR("Awaiting New Firmware "), false);
+        } else {
+            oled_write_P(PSTR("Rebooting "), false);
+        }
+    }
+
+bool shutdown_user(bool jump_to_bootloader) {
+    oled_render_boot(jump_to_bootloader);
+}
+
 
 void oled_render_boot(bool bootloader) {
     oled_clear();
