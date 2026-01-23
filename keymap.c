@@ -146,10 +146,6 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   )
 };
 
-
-
-
-
 layer_state_t layer_state_set_user(layer_state_t state) {
   return update_tri_layer_state(state, _SYMBOL, _NAVI, _ADJUST);
 }
@@ -160,26 +156,17 @@ layer_state_t layer_state_set_user(layer_state_t state) {
 bool oled_enabled = true;
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
-switch (keycode) {
-case KC_OLED:
-    if (record->event.pressed) {
-            oled_enabled = !oled_enabled;  // toggle oled_enabled
-        }
-        break;
-    }
-    return true;
-}
-
-bool oled_enabled = true;
-
-bool process_record_user(uint16_t keycode, keyrecord_t *record) {
-switch (keycode) {
-case KC_OLED:
-    if (record->event.pressed) {
-            oled_enabled = !oled_enabled;  // toggle oled_enabled
-        }
-        break;
-    }
+  if (record->event.pressed) {
+    set_keylog(keycode, record);
+    // set_timelog();
+  }
+  switch (keycode) {
+    case KC_OLED:
+      if (record->event.pressed) {
+        oled_enabled = !oled_enabled;  // toggle oled_enabled
+      }
+    break;
+  }
     return true;
 }
 
@@ -220,14 +207,7 @@ bool oled_task_user(void) {
     }
   }
   
-  if (!oled_enabled) {
-    if (is_oled_on()) {
-        oled_off()
-        return false
-    }
-  }
-  
-  if (is_keyboard_left()) {
+  if (is_keyboard_master()) {
     // If you want to change the display of OLED, you need to change here
     oled_write_ln(read_layer_state(), false);
     oled_write_ln(read_keylog(), false);
@@ -256,30 +236,4 @@ bool shutdown_user(bool jump_to_bootloader) {
     oled_render_boot(jump_to_bootloader);
 }
 
-
-void oled_render_boot(bool bootloader) {
-    oled_clear();
-    for (int i = 0; i < 16; i++) {
-        oled_set_cursor(0, i);
-        if (bootloader) {
-            oled_write_P(PSTR("Awaiting New Firmware "), false);
-        } else {
-            oled_write_P(PSTR("Rebooting "), false);
-        }
-    }
-
-bool shutdown_user(bool jump_to_bootloader) {
-    oled_render_boot(jump_to_bootloader);
-}
-
 #endif // OLED_ENABLE
-
-bool process_record_user(uint16_t keycode, keyrecord_t *record) {
-  if (record->event.pressed) {
-#ifdef OLED_ENABLE
-    set_keylog(keycode, record);
-#endif
-    // set_timelog();
-  }
-  return true;
-}
