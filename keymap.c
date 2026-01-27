@@ -167,10 +167,9 @@ enum anim_frames {
 // Bongo cat animation end
 
 oled_rotation_t oled_init_user(oled_rotation_t rotation) {
-  if (!is_keyboard_left() && is_keyboard_master()) {
-      return OLED_ROTATION_180;
-  }else if (!is_keyboard_master())
-      return OLED_ROTATION_180;  // flips the display 180 degrees if offhand
+  if ((!is_keyboard_left() && is_keyboard_master()) || (is_keyboard_left() && !is_keyboard_master())) {
+      return OLED_ROTATION_180; // flips screens so that they both face center
+  }
   return rotation;
 }
 
@@ -180,14 +179,14 @@ const char *read_logo(void);
 bool oled_task_user(void) {
   if (!oled_enabled) {
     if (is_oled_on()) {
-        oled_off()
-        return false
+        oled_off();
+        return false;
     }
   }
   if (is_keyboard_master()) {
 
     // display current layer
-    oled_write("L: ", false)
+    oled_write("L: ", false);
     switch (get_highest_layer(layer_state)) {
         case _QWERTY:
             oled_write_ln("Qwerty", false);
