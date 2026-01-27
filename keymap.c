@@ -186,39 +186,63 @@ bool oled_task_user(void) {
   if (is_keyboard_master()) {
 
     // display current layer
+    led_t led_state = host_keyboard_led_state();
+
     switch (get_highest_layer(layer_state)) {
         case _QWERTY:
-            oled_write("Qwerty", false);
+            if(led_state.caps_lock){
+              oled_write("QWERTY", false);
+            }else{
+              oled_write("Qwerty", false);
+            }
             break;
         case _COLEMAK_DH:
-            oled_write("Colemak DH", false);
+            if(led_state.caps_lock){
+              oled_write("COLEMAK DH", false);
+            }else{
+              oled_write("Colemak DH", false);
+            }
             break;
         case _GAMING:
-            oled_write("Gaming", false);
+            if(led_state.caps_lock){
+              oled_write("GAMING", false);
+            }else{
+              oled_write("Gaming", false);
+            }
             break;
         case _SYMBOL:
-            oled_write("Symbols", false);
+            if(led_state.caps_lock){
+              oled_write("SYMBOLS", false);
+            }else{
+              oled_write("Symbol", false);
+            }
             break;
         case _NAVI:
-            oled_write("Navi", false);
+            if(led_state.caps_lock){
+              oled_write("NAVI", false);
+            }else{
+              oled_write("Navi", false);
+            }
             break;
         case _ADJUST:
-            oled_write("Adjust", false);
+            if(led_state.caps_lock){
+              oled_write("ADJUST", false);
+            }else{
+              oled_write("adjust", false);
+            }
             break;
         default:
-            oled_write("Undefined", false);
+            if(led_state.caps_lock){
+              oled_write("Undef caps", false);
+            }else{
+              oled_write("Undef", false);
+            };
     }
-    led_t led_state = host_keyboard_led_state();
-    if(led_state.caps_lock){
-      oled_write(" [c]", false)
-    }
-     if(led_state.num_lock){
+    if(led_state.num_lock){
       oled_write(" [n]", false)
-    }   
-    if(led_state.scroll_lock){
-      oled_write(" [s]", false)
     }
-    oled_write("\n", false);
+    oled_write("\n", false)
+    
 
     // wpm counter 
     uint8_t n = get_current_wpm();
