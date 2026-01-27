@@ -186,29 +186,39 @@ bool oled_task_user(void) {
   if (is_keyboard_master()) {
 
     // display current layer
-    oled_write("L: ", false);
     switch (get_highest_layer(layer_state)) {
         case _QWERTY:
-            oled_write_ln("Qwerty", false);
+            oled_write("Qwerty", false);
             break;
         case _COLEMAK_DH:
-            oled_write_ln("Colemak DH", false);
+            oled_write("Colemak DH", false);
             break;
         case _GAMING:
-            oled_write_ln("Gaming", false);
+            oled_write("Gaming", false);
             break;
         case _SYMBOL:
-            oled_write_ln("Symbols & fkeys", false);
+            oled_write("Symbols", false);
             break;
         case _NAVI:
-            oled_write_ln("Navigation", false);
+            oled_write("Navi", false);
             break;
         case _ADJUST:
-            oled_write_ln("Adjust", false);
+            oled_write("Adjust", false);
             break;
         default:
-            oled_write_ln("Undefined", false);
+            oled_write("Undefined", false);
     }
+    led_t led_state = host_keyboard_led_state();
+    if(led_state.caps_lock){
+      oled_write(" [c]", false)
+    }
+     if(led_state.num_lock){
+      oled_write(" [n]", false)
+    }   
+    if(led_state.scroll_lock){
+      oled_write(" [s]", false)
+    }
+    oled_write("\n", false);
 
     // wpm counter 
     uint8_t n = get_current_wpm();
