@@ -6,7 +6,7 @@ enum layer_number {
   _GAMING,
   _SYMBOL,
   _NAVI,
-  _ADJUST
+  _ADJUST,
 };
 
 enum custom_keycodes {
@@ -123,7 +123,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   KC_LSFT, KC_LCTL,  KC_PEQL, KC_P0,   KC_PDOT, KC_PMNS, KC_ENT,  _______,  _______, _______, _______, _______, _______, _______,
                              _______, _______, _______,  _______, _______,  _______, _______, _______
 ),
-/* ADJUS=r
+/* ADJUST
  * ,-----------------------------------------.                    ,-----------------------------------------.
  * |      |      |      |      |      |      |                    |      | HUE+ | HUE- |      |      |      |
  * |------+------+------+------+------+------|                    |------+------+------+------+------+------|
@@ -155,21 +155,6 @@ layer_state_t layer_state_set_user(layer_state_t state) {
 
 bool oled_enabled = true;
 
-bool process_record_user(uint16_t keycode, keyrecord_t *record) {
-  if (record->event.pressed) {
-    set_keylog(keycode, record);
-    // set_timelog();
-  }
-  switch (keycode) {
-    case KC_OLED:
-      if (record->event.pressed) {
-        oled_enabled = !oled_enabled;  // toggle oled_enabled
-      }
-    break;
-  }
-    return true;
-}
-
 // Bongo cat animation start
 // under construction (waiting oleds to come in mail lol)
 enum anim_frames {
@@ -177,27 +162,20 @@ enum anim_frames {
   _READY_BLINK,
   _LEFT_UP,
   _RIGHT_UP,
-  _WAITING
+  _WAITING,
 };
 // Bongo cat animation end
 
 oled_rotation_t oled_init_user(oled_rotation_t rotation) {
-  if (!is_keyboard_master())
-    return OLED_ROTATION_180;  // flips the display 180 degrees if offhand
+  if (!is_keyboard_left() && is_keyboard_master()) {
+      return OLED_ROTATION_180;
+  }else if (!is_keyboard_master())
+      return OLED_ROTATION_180;  // flips the display 180 degrees if offhand
   return rotation;
 }
 
 // When you add source files to SRC in rules.mk, you can use functions.
-const char *read_layer_state(void);
 const char *read_logo(void);
-void set_keylog(uint16_t keycode, keyrecord_t *record);
-const char *read_keylog(void);
-const char *read_keylogs(void);
-
-// const char *read_mode_icon(bool swap);
-// const char *read_host_led_state(void);
-// void set_timelog(void);
-// const char *read_timelog(void);
 
 bool oled_task_user(void) {
   if (!oled_enabled) {
@@ -206,34 +184,59 @@ bool oled_task_user(void) {
         return false
     }
   }
-  
   if (is_keyboard_master()) {
-    // If you want to change the display of OLED, you need to change here
-    oled_write_ln(read_layer_state(), false);
-    oled_write_ln(read_keylog(), false);
-    oled_write_ln(read_keylogs(), false);
-    //oled_write_ln(read_mode_icon(keymap_config.swap_lalt_lgui), false);
-    //oled_write_ln(read_host_led_state(), false);
-    //oled_write_ln(read_timelog(), false);
+
+    // display current layer
+    oled_write("L: ", false)
+    switch (get_highest_layer(layer_state)) {
+        case _QWERTY:
+            oled_write_ln("Qwerty", false);
+            break;
+        case _COLEMAK_DH:
+            oled_write_ln("Colemak DH", false);
+            break;
+        case _GAMING:
+            oled_write_ln("Gaming", false);
+            break;
+        case _SYMBOL:
+            oled_write_ln("Symbols & fkeys", false);
+            break;
+        case _NAVI:
+            oled_write_ln("Navigation", false);
+            break;
+        case _ADJUST:
+            oled_write_ln("Adjust", false);
+            break;
+        default:
+            oled_write_ln("Undefined", false);
+    }
+
+    // wpm counter 
+    uint8_t n = get_current_wpm();
+    char    wpm_str[4];
+    wpm_str[3] = '\0';
+    wpm_str[2] = '0' + n % 10;
+    wpm_str[1] = '0' + (n /= 10) % 10;
+    wpm_str[0] = '0' + n / 10;
+    oled_write(wpm_str, false);
+
+    oled_write_ln(" wpm", false);
+    
   } else {
     oled_write(read_logo(), false);
   }
     return false;
 }
 
-void oled_render_boot(bool bootloader) {
-    oled_clear();
-    for (int i = 0; i < 16; i++) {
-        oled_set_cursor(0, i);
-        if (bootloader) {
-            oled_write_P(PSTR("Awaiting New Firmware "), false);
-        } else {
-            oled_write_P(PSTR("Rebooting "), false);
-        }
-    }
-
-bool shutdown_user(bool jump_to_bootloader) {
-    oled_render_boot(jump_to_bootloader);
+bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+  switch(keycode){
+    case KC_OLED:
+      if (record->event.pressed) {
+          oled_enabled = !oled_enabled;     // toggle oled_enabled
+      }
+    break;
+  }
+  return true;
 }
 
 #endif // OLED_ENABLE

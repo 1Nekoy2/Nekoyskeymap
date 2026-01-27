@@ -11,4 +11,4 @@
 
 - `cd /path/to/qmk_firmware`
 - Ensure latest libraries are loaded `make git-submodule`
-- you have to pass either `-e SIDE=RIGHT` or `-e SIDE=LEFT` arguments depending on the side of the keyboard you want to flash
+- the first time you flash any side of the keyboard you should flash handedness into eeprom ([`for more info click here`](https://docs.qmk.fm/features/split_keyboard)) for me the command looks like this `qmk flash -kb lily58 -km Nekoys_keymap -bl avrdude-split-left` for left module and `mk flash -kb lily58 -km Nekoys_keymap -bl avrdude-split-left` for the right

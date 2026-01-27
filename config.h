@@ -21,16 +21,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #pragma once
 
 /* Select hand configuration */
-
-#if defined(SIDE_LEFT)
-    #define MASTER_LEFT
-#elif defined(SIDE_RIGHT)
-    #define MASTER_RIGHT
-#else 
-    #error "-e SIDE=LEFT or -e SIDE=RIGHT has to be defined"
-#endif
+#define EE_HANDS
 
 #define SPLIT_USB_DETECT
+#define SPLIT_OLED_ENABLE
 
 #define QUICK_TAP_TERM 0
 #define TAPPING_TERM 100
