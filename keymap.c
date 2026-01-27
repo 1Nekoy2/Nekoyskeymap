@@ -188,7 +188,7 @@ bool oled_task_user(void) {
     // display current layer
     led_t led_state = host_keyboard_led_state();
 
-    switch (get_highest_layer(layer_state)) {
+    switch (get_highest_layer(layer_state | default_layer_state)) {
         case _QWERTY:
             if(led_state.caps_lock){
               oled_write("QWERTY", false);
@@ -198,9 +198,12 @@ bool oled_task_user(void) {
             break;
         case _COLEMAK_DH:
             if(led_state.caps_lock){
-              oled_write("COLEMAK DH", false);
+              oled_write("COLEMAK", false);
             }else{
-              oled_write("Colemak DH", false);
+              oled_write("Colemak", false);
+            }
+            if(!led_state.num_lock){
+              oled_write(" DH", false);
             }
             break;
         case _GAMING:
@@ -228,7 +231,7 @@ bool oled_task_user(void) {
             if(led_state.caps_lock){
               oled_write("ADJUST", false);
             }else{
-              oled_write("adjust", false);
+              oled_write("Adjust", false);
             }
             break;
         default:
@@ -239,9 +242,10 @@ bool oled_task_user(void) {
             };
     }
     if(led_state.num_lock){
-      oled_write(" [n]", false)
+      oled_write(" [n]", false);
     }
-    oled_write("\n", false)
+
+    oled_write("\n", false);
     
 
     // wpm counter 
