@@ -127,7 +127,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * ,-----------------------------------------.                    ,-----------------------------------------.
  * |      |      |      |      |      |      |                    |      | HUE+ | HUE- |      |      |      |
  * |------+------+------+------+------+------|                    |------+------+------+------+------+------|
- * |      |      |SCRlc |Numlc |Capslc|      |                    |      | SAT+ | SAT- |      |      |      |
+ * |      |      |      |Numlc |Capslc|      |                    |      | SAT+ | SAT- |      |      |      |
  * |------+------+------+------+------+------|                    |------+------+------+------+------+------|
  * |      |      |GAMING|COLEMK|QWERTY|      |-------.    ,-------|      | BRI+ | BRI- | Vol+ | Vol- |      |
  * |------+------+------+------+------+------| PLAY  |    |  MUTE |------+------+------+------+------+------|
@@ -139,7 +139,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  */
   [_ADJUST] = LAYOUT(
   _______, _______, _______,     _______,          _______,      _______,                   _______, UG_HUEU, UG_HUED, _______, _______, _______,
-  _______, _______, KC_SCRL,     KC_NUM,           KC_CAPS,      _______,                   _______, UG_SATU, UG_SATD, _______, _______, _______,
+  _______, _______, _______,     KC_NUM,           KC_CAPS,      _______,                   _______, UG_SATU, UG_SATD, _______, _______, _______,
   _______, _______, DF(_GAMING), PDF(_COLEMAK_DH), PDF(_QWERTY), _______,                   _______, UG_VALU, UG_VALD, KC_VOLU, KC_VOLD, _______,
   _______, _______, _______,     _______,          _______,      _______, KC_MPLY, KC_MUTE, _______, UG_TOGG, KC_OLED, _______, _______, _______,
                                  _______,          _______,      _______, _______, _______, _______, _______, _______
@@ -172,6 +172,78 @@ oled_rotation_t oled_init_user(oled_rotation_t rotation) {
   }
   return rotation;
 }
+static void display_active_layer(void){
+  led_t led_state = host_keyboard_led_state();
+
+  switch (get_highest_layer(layer_state | default_layer_state)) {
+      case _QWERTY:
+          if(led_state.caps_lock){
+            oled_write_ln("QWERTY", false);
+          }else{
+            oled_write_ln("Qwerty", false);
+          }
+          break;
+      case _COLEMAK_DH:
+          if(led_state.caps_lock){
+            oled_write_ln("COLEMAK DH", false);
+          }else{
+            oled_write_ln("Colemak DH", false);
+          }
+          break;
+      case _GAMING:
+          if(led_state.caps_lock){
+            oled_write_ln("GAMING", false);
+          }else{
+            oled_write_ln("Gaming", false);
+          }
+          break;
+      case _SYMBOL:
+          if(led_state.caps_lock){
+            oled_write_ln("SYMBOLS", false);
+          }else{
+            oled_write_ln("Symbol", false);
+          }
+          break;
+      case _NAVI:
+          if(led_state.caps_lock){
+            oled_write("NAVI", false);
+          }else{
+            oled_write("Navi", false);
+          }
+          if(led_state.num_lock){
+            oled_write_ln(" [n]", false);
+          }else{
+            oled_write("\n", false);
+          }
+          break;
+      case _ADJUST:
+          if(led_state.caps_lock){
+            oled_write_ln("ADJUST", false);
+          }else{
+            oled_write_ln("Adjust", false);
+          }
+          break;
+      default:
+          if(led_state.caps_lock){
+            oled_write_ln("Undef caps", false);
+          }else{
+            oled_write_ln("Undef", false);
+          };
+  }
+}
+
+static void display_wpm(int8_t current_wpm){
+
+    char wpm_str[4];
+    wpm_str[3] = '\0';
+    wpm_str[2] = '0' + current_wpm % 10;
+    wpm_str[1] = '0' + (current_wpm /= 10) % 10;
+    wpm_str[0] = '0' + current_wpm / 10;
+    oled_write(wpm_str, false);
+
+    oled_write_ln(" wpm", false);
+
+}
 
 // When you add source files to SRC in rules.mk, you can use functions.
 const char *read_logo(void);
@@ -185,79 +257,10 @@ bool oled_task_user(void) {
   }
   if (is_keyboard_master()) {
 
-    // display current layer
-    led_t led_state = host_keyboard_led_state();
+    int8_t current_wpm = get_current_wpm();
 
-    switch (get_highest_layer(layer_state | default_layer_state)) {
-        case _QWERTY:
-            if(led_state.caps_lock){
-              oled_write("QWERTY", false);
-            }else{
-              oled_write("Qwerty", false);
-            }
-            break;
-        case _COLEMAK_DH:
-            if(led_state.caps_lock){
-              oled_write("COLEMAK", false);
-            }else{
-              oled_write("Colemak", false);
-            }
-            if(!led_state.num_lock){
-              oled_write(" DH", false);
-            }
-            break;
-        case _GAMING:
-            if(led_state.caps_lock){
-              oled_write("GAMING", false);
-            }else{
-              oled_write("Gaming", false);
-            }
-            break;
-        case _SYMBOL:
-            if(led_state.caps_lock){
-              oled_write("SYMBOLS", false);
-            }else{
-              oled_write("Symbol", false);
-            }
-            break;
-        case _NAVI:
-            if(led_state.caps_lock){
-              oled_write("NAVI", false);
-            }else{
-              oled_write("Navi", false);
-            }
-            break;
-        case _ADJUST:
-            if(led_state.caps_lock){
-              oled_write("ADJUST", false);
-            }else{
-              oled_write("Adjust", false);
-            }
-            break;
-        default:
-            if(led_state.caps_lock){
-              oled_write("Undef caps", false);
-            }else{
-              oled_write("Undef", false);
-            };
-    }
-    if(led_state.num_lock){
-      oled_write(" [n]", false);
-    }
-
-    oled_write("\n", false);
-    
-
-    // wpm counter 
-    uint8_t n = get_current_wpm();
-    char    wpm_str[4];
-    wpm_str[3] = '\0';
-    wpm_str[2] = '0' + n % 10;
-    wpm_str[1] = '0' + (n /= 10) % 10;
-    wpm_str[0] = '0' + n / 10;
-    oled_write(wpm_str, false);
-
-    oled_write_ln(" wpm", false);
+    display_active_layer();
+    display_wpm(current_wpm);
     
   } else {
     oled_write(read_logo(), false);
