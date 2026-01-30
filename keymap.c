@@ -27,7 +27,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * |------+------+------+------+------+------|   [   |    |    ]  |------+------+------+------+------+------|
  * |LShift|   Z  |   X  |   C  |   D  |   V  |-------|    |-------|   K  |   H  |   ,  |   .  |   /  |RShift|
  * `-----------------------------------------/       /     \      \-----------------------------------------'
- *                   | LAlt |SYMBOL|BackSP| /Space  /       \Enter \  | LGUI | NAVI | RAlt |
+ *                   | LAlt |SYMBOL| LGUI | /Space  /       \Enter \  |BackSP| NAVI | RAlt |
  *                   |      |      |      |/       /         \      \ |      |      |      |
  *                   `----------------------------'           '------''--------------------'
  */
@@ -49,7 +49,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * |------+------+------+------+------+------|   [   |    |    ]  |------+------+------+------+------+------|
  * |LShift|   Z  |   X  |   C  |   V  |   B  |-------|    |-------|   N  |   M  |   ,  |   .  |   /  |RShift|
  * `-----------------------------------------/       /     \      \-----------------------------------------'
- *                   | LAlt |SYMBOL|BackSP| /Space  /       \Enter \  | LGUI | NAVI | RAlt |
+ *                   | LAlt |SYMBOL| LGUI | /Space  /       \Enter \  |BackSP| NAVI | RAlt |
  *                   |      |      |      |/       /         \      \ |      |      |      |
  *                   `----------------------------'           '------''--------------------'
  */
@@ -71,7 +71,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * |------+------+------+------+------+------|   [   |    |    ]  |------+------+------+------+------+------|
  * |LShift|   Z  |   X  |   C  |   V  |   B  |-------|    |-------|   N  |   M  |   ,  | Left | Down |Right |
  * `-----------------------------------------/       /     \      \-----------------------------------------'
- *                   | LAlt |SYMBOL|BackSP| /Space  /       \Enter \  | LGUI | NAVI | RAlt |
+ *                   | LAlt |SYMBOL| LGUI | /Space  /       \Enter \  |BackSP| NAVI | RAlt |
  *                   |      |      |      |/       /         \      \ |      |      |      |
  *                   `----------------------------'           '------''--------------------'
  */
@@ -92,7 +92,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * |------+------+------+------+------+------|   <   |    |    >  |------+------+------+------+------+------|
  * |LShift|LCTRL |      |Delete|Insert|PriScr|-------|    |-------|   /  |   (  |   )  |   [  |   ]  |   !  |
  * `-----------------------------------------/       /     \      \-----------------------------------------'
- *                   | LAlt | BASE |BackSP| /Space  /       \Enter \  | LGUI | NAVI | RAlt |
+ *                   | LAlt | BASE | LGUI | /Space  /       \Enter \  |BackSP| NAVI | RAlt |
  *                   |      |      |      |/       /         \      \ |      |      |      |
  *                   `----------------------------'           '------''--------------------'
  */
@@ -105,24 +105,24 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 ),
 /* NAVI
  * ,-----------------------------------------.                    ,-----------------------------------------.
- * |      |   $  |   7  |   8  |   9  |   /  |                    |      |      |      |      |      |      |
+ * |      |   $  |   *  |   /  |   -  |   +  |                    |      |      |      |      |      |      |
  * |------+------+------+------+------+------|                    |------+------+------+------+------+------|
- * |      |   %  |   4  |   5  |   6  |   *  |                    |      |      |      |      |PageUp|PageDn|
+ * |      |   %  |   =  |   7  |   8  |   9  |                    |      |      |      |      |PageUp|PageDn|
  * |------+------+------+------+------+------|                    |------+------+------+------+------+------|
- * |      |      |   1  |   2  |   3  |   +  |-------.    ,-------| Left | Down |  Up  |Right | Home | End  |
+ * |      |      |   0  |   4  |   5  |   6  |-------.    ,-------| Left | Down |  Up  |Right | Home | End  |
  * |------+------+------+------+------+------| Enter |    |       |------+------+------+------+------+------|
- * |LShift|LCTRL |   =  |   0  |   .  |   -  |-------|    |-------|      |      |      |      |      |      |
+ * |LShift|LCTRL |   .  |   1  |   2  |   3  |-------|    |-------|      |      |      |      |      |      |
  * `-----------------------------------------/       /     \      \-----------------------------------------'
- *                   | LAlt |SYMBOL|BackSP| /Space  /       \Enter \  | LGUI | BASE | RAlt |
+ *                   | LAlt |SYMBOL| LGUI | /Space  /       \Enter \  |BackSP| BASE | RAlt |
  *                   |      |      |      |/       /         \      \ |      |      |      |
  *                   `----------------------------'           '------''--------------------'
  */
 
 [_NAVI] = LAYOUT(
-  _______, KC_DLR,   KC_P7,   KC_P8,   KC_P9,   KC_PSLS,                    _______, _______, _______, _______, _______, _______,
-  _______, KC_PERC,  KC_P4,   KC_P5,   KC_P6,   KC_PAST,                    _______, _______, _______, _______, KC_PGUP, KC_PGDN,
-  _______, _______,  KC_P1,   KC_P2,   KC_P3,   KC_PPLS,                    KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT, KC_HOME, KC_END,
-  KC_LSFT, KC_LCTL,  KC_PEQL, KC_P0,   KC_PDOT, KC_PMNS, KC_ENT,  _______,  _______, _______, _______, _______, _______, _______,
+  _______, KC_DLR,   KC_PSLS, KC_PAST, KC_PMNS, KC_PSLS,                    _______, _______, _______, _______, _______, _______,
+  _______, KC_PERC,  KC_PEQL, KC_P7,   KC_P8,   KC_P9,                      _______, _______, _______, _______, KC_PGUP, KC_PGDN,
+  _______, _______,  KC_P0,   KC_P4,   KC_P5,   KC_P6,                      KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT, KC_HOME, KC_END,
+  KC_LSFT, KC_LCTL,  KC_PDOT, KC_P1,   KC_P2,   KC_P3,   KC_ENT,  _______,  _______, _______, _______, _______, _______, _______,
                              _______, _______, _______,  _______, _______,  _______, _______, _______
 ),
 /* OPTIONS
@@ -135,7 +135,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * |------+------+------+------+------+------| PLAY  |    |  MUTE |------+------+------+------+------+------|
  * |      |      |      |      |      |      |-------|    |-------|      |UG TG | OLED |      |      |      |
  * `-----------------------------------------/       /     \      \-----------------------------------------'
- *                   | LAlt | LGUI |LOWER | /Space  /       \Enter \  |RAISE |BackSP| RGUI |
+ *                   | LAlt | BASE | LGUI | /Space  /       \Enter \  |BackSP| BASE | RGUI |
  *                   |      |      |      |/       /         \      \ |      |      |      |
  *                   `----------------------------'           '------''--------------------'
  */
@@ -160,12 +160,12 @@ static uint16_t held_shift = 0;
 #ifdef OLED_ENABLE
 
 // settings
-#    define MIN_WALK_SPEED 10
-#    define MIN_RUN_SPEED 40
+#define MIN_WALK_SPEED 10
+#define MIN_RUN_SPEED 40
 
 // advanced settings
-#    define ANIM_FRAME_DURATION 200 // how long each frame lasts in ms
-#    define ANIM_SIZE 96            // number of bytes in array. If you change sprites, minimize for adequate firmware size. max is 1024
+#define ANIM_FRAME_DURATION 200 // how long each frame lasts in ms
+#define ANIM_SIZE 96            // number of bytes in array. If you change sprites, minimize for adequate firmware size. max is 1024
 
 // status variables
 uint8_t current_wpm = 0;
@@ -289,7 +289,7 @@ static void render_luna(int LUNA_X, int LUNA_Y) {
         }
     }
 
-#    if OLED_TIMEOUT > 0
+#if OLED_TIMEOUT > 0
     /* the animation prevents the normal timeout from occuring */
     if (last_input_activity_elapsed() > OLED_TIMEOUT && last_led_activity_elapsed() > OLED_TIMEOUT) {
         oled_off();
@@ -297,7 +297,7 @@ static void render_luna(int LUNA_X, int LUNA_Y) {
     } else {
         oled_on();
     }
-#    endif
+#endif
 
     /* animation timer */
     if (timer_elapsed32(anim_timer) > ANIM_FRAME_DURATION) {
@@ -395,6 +395,7 @@ static void display_wpm(uint8_t current_wpm) {
 
 // When you add source files to SRC in rules.mk, you can use functions.
 bool oled_task_user(void) {
+
     if (!oled_enabled) {
         if (is_oled_on()) {
             oled_off();
@@ -448,7 +449,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         #endif
 
         // Smart Backspace Delete
-
         case KC_RSFT:
         case KC_LSFT:
             shift_held = record->event.pressed;
