@@ -375,7 +375,7 @@ static void display_active_layer(led_t led_usb_state) {
 }
 
 static void display_wpm(uint8_t current_wpm) {
-    oled_set_cursor(1, 2);
+    oled_set_cursor(2, 3);
     char wpm_str[4];
 
     wpm_str[3] = '\0';
@@ -384,7 +384,7 @@ static void display_wpm(uint8_t current_wpm) {
     wpm_str[0] = '0' + current_wpm / 10;
     oled_write(wpm_str, false);
 
-    oled_set_cursor(1, 3);
+    oled_set_cursor(2, 4);
     oled_write_ln("wpm", false);
 }
 
@@ -410,17 +410,23 @@ bool oled_task_user(void) {
     return false;
 }
 
+#endif // OLED_ENABLE
+
+uint8_t mod_state;
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+
+    mod_state = get_mods();
     switch (keycode) {
+        #ifdef OLED_ENABLE
         case KC_OLED:
             if (record->event.pressed) {
                 oled_enabled = !oled_enabled; // toggle oled_enabled
-                return true;
             }
+            return true;
             break;
 
         // Keyboard pet
-        case KC_RCTL:
+        case KC_LCTL:
             if (record->event.pressed) {
                 isSneaking = true;
             } else {
@@ -435,8 +441,25 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 isJumping = false;
             }
             break;
+        #endif
+
+        // Smart Backspace Delete
+        case KC_BSPC:
+            static bool delkey_registered;
+            if (record->event.pressed) {
+                if (mod_state & MOD_MASK_SHIFT) {
+                    del_mods(MOD_MASK_SHIFT);
+                    register_code(KC_DEL);
+                    delkey_registered = true;
+                    set_mods(mod_state);
+                } 
+            }else if (delkey_registered) {
+                unregister_code(KC_DEL);
+                delkey_registered = false;
+                return false;
+            }
+            return true;
+            break;
     }
     return true;
 }
-
-#endif // OLED_ENABLE
