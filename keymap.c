@@ -154,34 +154,37 @@ layer_state_t layer_state_set_user(layer_state_t state) {
 //SSD1306 OLED update loop, make sure to enable OLED_ENABLE=yes in rules.mk
 #ifdef OLED_ENABLE
 
-bool oled_enabled = true;
 
 oled_rotation_t oled_init_user(oled_rotation_t rotation) {
-  if (!is_keyboard_master()) {
-      return OLED_ROTATION_90; 
+  if (is_keyboard_master()) {
+    return OLED_ROTATION_270; 
+  } else {
+    return OLED_ROTATION_180;
   }
   return rotation;
 }
 
-// Keyboard pet START 
-
 /* settings */
-#    define MIN_WALK_SPEED      10
-#    define MIN_RUN_SPEED       40
+#define MIN_WALK_SPEED      10
+#define MIN_RUN_SPEED       40
 
 /* advanced settings */
-#    define ANIM_FRAME_DURATION 200  // how long each frame lasts in ms
-#    define ANIM_SIZE           96   // number of bytes in array. If you change sprites, minimize for adequate firmware size. max is 1024
+#define ANIM_FRAME_DURATION 200  // how long each frame lasts in ms
+#define ANIM_SIZE           96   // number of bytes in array. If you change sprites, minimize for adequate firmware size. max is 1024
+
+/* status variables */
+uint8_t current_wpm = 0;
+led_t led_usb_state;
+bool oled_enabled = true;
+
+// Keyboard pet START 
+// by HellTM
 
 /* timers */
 uint32_t anim_timer = 0;
 
 /* current frame */
 uint8_t current_frame = 0;
-
-/* status variables */
-int   current_wpm = 0;
-led_t led_usb_state;
 
 bool isSneaking = false;
 bool isJumping  = false;
@@ -282,7 +285,7 @@ static void render_luna(int LUNA_X, int LUNA_Y) {
         }
     }
 
-#    if OLED_TIMEOUT > 0
+#if OLED_TIMEOUT > 0
     /* the animation prevents the normal timeout from occuring */
     if (last_input_activity_elapsed() > OLED_TIMEOUT && last_led_activity_elapsed() > OLED_TIMEOUT) {
         oled_off();
@@ -290,7 +293,7 @@ static void render_luna(int LUNA_X, int LUNA_Y) {
     } else {
         oled_on();
     }
-#    endif
+#endif
 
     /* animation timer */
     if (timer_elapsed32(anim_timer) > ANIM_FRAME_DURATION) {
@@ -317,9 +320,9 @@ static void display_active_layer(led_t led_usb_state){
           oled_clear();
           oled_set_cursor(0, 0);
           if(led_usb_state.caps_lock){
-            oled_write_ln("QWERTY", false);
+            oled_write("QWERTY", false);
           }else{
-            oled_write_ln("Qwerty", false);
+            oled_write("Qwerty", false);
           }
           break;
       case _GAMING:
@@ -335,18 +338,18 @@ static void display_active_layer(led_t led_usb_state){
           oled_clear();
           oled_set_cursor(0, 1);
           if(led_usb_state.caps_lock){
-            oled_write("NAVIGATION & NUMPAD", false);
+            oled_write("NAVI & NUMPAD", false);
           }else{
-            oled_write("Navigation & numpad", false);
+            oled_write("Navi & numpad", false);
           }
           break;
       case _SYMBOL:
           oled_clear();
           oled_set_cursor(0, 2);
           if(led_usb_state.caps_lock){
-            oled_write("SYMBOLS & FUNCTION KEYS", false);
+            oled_write("SYMBOLS & FKEYS", false);
           }else{
-            oled_write("Symbols & function keys", false);
+            oled_write("Symbols & fkeys", false);
           }
           break;
       case _OPTIONS:
@@ -368,22 +371,23 @@ static void display_active_layer(led_t led_usb_state){
           };
   }
   if (led_usb_state.num_lock) {
-      oled_write(" [num]", false)
+      oled_write(" [n]", false);
       }
-  oled_write("\n", false)
+  oled_write("\n", false);
 }
 
-static void display_wpm(int8_t current_wpm){
-    oled_set_cursor(0, 14);
+static void display_wpm(uint8_t current_wpm){
+    oled_set_cursor(1, 2);
     char wpm_str[4];
-    wpm_str[3] = '\0';
+
+    wpm_str[3] = '\0'
     wpm_str[2] = '0' + current_wpm % 10;
     wpm_str[1] = '0' + (current_wpm /= 10) % 10;
     wpm_str[0] = '0' + current_wpm / 10;
     oled_write(wpm_str, false);
 
-    oled_set_cursor(0, 15);
-    oled_write_ln(" wpm", false);
+    oled_set_cursor(1, 3);
+    oled_write_ln("wpm", false);
 
 }
 
@@ -396,18 +400,16 @@ bool oled_task_user(void) {
     }
   }
 
-  int current_wpm = get_current_wpm();
-  led_t led_usb_state = host_keyboard_led_usb_state();
+  current_wpm = get_current_wpm();
+  led_usb_state = host_keyboard_led_state();
 
 
   if (is_keyboard_master()) {
-
-    display_active_layer(led_usb_state);
-    
-  } else {
-
     display_wpm(current_wpm);
     render_luna(0, 13);
+    
+  } else {
+    display_active_layer(led_usb_state);
 
   }
     return false;
