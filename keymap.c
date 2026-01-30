@@ -11,6 +11,7 @@ enum layer_number {
 
 enum custom_keycodes {
   KC_OLED = SAFE_RANGE,
+  KC_BSDL,
 };
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -36,7 +37,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   KC_TAB,   KC_Q,   KC_W,    KC_F,    KC_P,    KC_B,                     KC_J,    KC_L,    KC_U,    KC_Y,    KC_SCLN, KC_MINS,
   KC_LCTL,  KC_A,   KC_R,    KC_S,    KC_T,    KC_G,                     KC_M,    KC_N,    KC_E,    KC_I,    KC_O,    KC_QUOT,
   KC_LSFT,  KC_Z,   KC_X,    KC_C,    KC_D,    KC_V,  KC_LBRC, KC_RBRC,  KC_K,    KC_H,    KC_COMM, KC_DOT,  KC_SLSH, KC_RSFT,
-                        KC_LALT, TT(_SYMBOL), KC_LGUI, KC_SPC, KC_ENT, KC_BSPC, TT(_NAVI), KC_RALT
+                        KC_LALT, TT(_SYMBOL), KC_LGUI, KC_SPC, KC_ENT, KC_BSDL, TT(_NAVI), KC_RALT
 ),
 /* QWERTY
  * ,-----------------------------------------.                    ,-----------------------------------------.
@@ -58,7 +59,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   KC_TAB,   KC_Q,   KC_W,    KC_E,    KC_R,    KC_T,                     KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    KC_MINS,
   KC_LCTL,  KC_A,   KC_S,    KC_D,    KC_F,    KC_G,                     KC_H,    KC_J,    KC_K,    KC_L,    KC_SCLN, KC_QUOT,
   KC_LSFT,  KC_Z,   KC_X,    KC_C,    KC_V,    KC_B,  KC_LBRC, KC_RBRC,  KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, KC_RSFT,
-                        KC_LALT, TT(_SYMBOL), KC_LGUI, KC_SPC, KC_ENT, KC_BSPC, TT(_NAVI), KC_RALT
+                        KC_LALT, TT(_SYMBOL), KC_LGUI, KC_SPC, KC_ENT, KC_BSDL, TT(_NAVI), KC_RALT
 ),
 /* GAMING
  * ,-----------------------------------------.                    ,-----------------------------------------.
@@ -79,7 +80,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   KC_TAB,   KC_Q,   KC_W,    KC_E,    KC_R,    KC_T,                     KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    KC_MINS,
   KC_LCTL,  KC_A,   KC_S,    KC_D,    KC_F,    KC_G,                     KC_H,    KC_J,    KC_K,    KC_L,    KC_UP,   KC_SLSH,
   KC_LSFT,  KC_Z,   KC_X,    KC_C,    KC_V,    KC_B,  KC_LBRC, KC_RBRC,  KC_N,    KC_M,    KC_COMM, KC_LEFT, KC_DOWN, KC_RGHT,
-                        KC_LALT, TT(_SYMBOL), KC_LGUI, KC_SPC, KC_ENT, KC_BSPC, TT(_NAVI), KC_RALT
+                        KC_LALT, TT(_SYMBOL), KC_LGUI, KC_SPC, KC_ENT, KC_BSDL, TT(_NAVI), KC_RALT
 ),
 /* SYMBOL
  * ,-----------------------------------------.                    ,-----------------------------------------.
@@ -150,9 +151,36 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 layer_state_t layer_state_set_user(layer_state_t state) {
   return update_tri_layer_state(state, _SYMBOL, _NAVI, _OPTIONS);
 }
+ 
+// Smart Backspace Delete
+bool shift_held = false;
+static uint16_t held_shift = 0;
 
 //SSD1306 OLED update loop, make sure to enable OLED_ENABLE=yes in rules.mk
 #ifdef OLED_ENABLE
+
+// settings
+#    define MIN_WALK_SPEED 10
+#    define MIN_RUN_SPEED 40
+
+// advanced settings
+#    define ANIM_FRAME_DURATION 200 // how long each frame lasts in ms
+#    define ANIM_SIZE 96            // number of bytes in array. If you change sprites, minimize for adequate firmware size. max is 1024
+
+// status variables
+uint8_t current_wpm = 0;
+led_t   led_usb_state;
+bool    oled_enabled = true;
+
+// timers
+uint32_t anim_timer = 0;
+
+// current frame
+uint8_t current_frame = 0;
+
+bool isSneaking = false;
+bool isJumping  = false;
+bool showedJump = true;
 
 oled_rotation_t oled_init_user(oled_rotation_t rotation) {
     if (is_keyboard_master()) {
@@ -163,31 +191,8 @@ oled_rotation_t oled_init_user(oled_rotation_t rotation) {
     return rotation;
 }
 
-/* settings */
-#    define MIN_WALK_SPEED 10
-#    define MIN_RUN_SPEED 40
-
-/* advanced settings */
-#    define ANIM_FRAME_DURATION 200 // how long each frame lasts in ms
-#    define ANIM_SIZE 96            // number of bytes in array. If you change sprites, minimize for adequate firmware size. max is 1024
-
-/* status variables */
-uint8_t current_wpm = 0;
-led_t   led_usb_state;
-bool    oled_enabled = true;
-
 // Keyboard pet START
 // by HellTM
-
-/* timers */
-uint32_t anim_timer = 0;
-
-/* current frame */
-uint8_t current_frame = 0;
-
-bool isSneaking = false;
-bool isJumping  = false;
-bool showedJump = true;
 
 /* logic */
 static void render_luna(int LUNA_X, int LUNA_Y) {
@@ -422,7 +427,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             if (record->event.pressed) {
                 oled_enabled = !oled_enabled; // toggle oled_enabled
             }
-            return true;
             break;
 
         // Keyboard pet
@@ -444,21 +448,29 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         #endif
 
         // Smart Backspace Delete
-        case KC_BSPC:
-            static bool delkey_registered;
+
+        case KC_RSFT:
+        case KC_LSFT:
+            shift_held = record->event.pressed;
+            held_shift = keycode;
+            break;
+
+        case KC_BSDL:
             if (record->event.pressed) {
-                if (mod_state & MOD_MASK_SHIFT) {
-                    del_mods(MOD_MASK_SHIFT);
+                if (shift_held) {
+                    unregister_code(held_shift);
                     register_code(KC_DEL);
-                    delkey_registered = true;
-                    set_mods(mod_state);
-                } 
-            }else if (delkey_registered) {
+                } else {
+                    register_code(KC_BSPC);
+                }
+            } else {
                 unregister_code(KC_DEL);
-                delkey_registered = false;
-                return false;
+                unregister_code(KC_BSPC);
+                if (shift_held) {
+                    register_code(held_shift);
+                }
             }
-            return true;
+            return false;
             break;
     }
     return true;
