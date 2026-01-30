@@ -5,6 +5,3 @@ SPLIT_KEYBOARD = yes
 OLED_ENABLE= yes                # OLED display
 WPM_ENABLE = yes                
 LTO_ENABLE = yes                # Memory optimization
-
-# If you want to change the display of OLED, you need to change here
-SRC +=  ./lib/logo_reader.c \
