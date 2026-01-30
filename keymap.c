@@ -154,30 +154,29 @@ layer_state_t layer_state_set_user(layer_state_t state) {
 //SSD1306 OLED update loop, make sure to enable OLED_ENABLE=yes in rules.mk
 #ifdef OLED_ENABLE
 
-
 oled_rotation_t oled_init_user(oled_rotation_t rotation) {
-  if (is_keyboard_master()) {
-    return OLED_ROTATION_270; 
-  } else {
-    return OLED_ROTATION_180;
-  }
-  return rotation;
+    if (is_keyboard_master()) {
+        return OLED_ROTATION_270;
+    } else {
+        return OLED_ROTATION_180;
+    }
+    return rotation;
 }
 
 /* settings */
-#define MIN_WALK_SPEED      10
-#define MIN_RUN_SPEED       40
+#    define MIN_WALK_SPEED 10
+#    define MIN_RUN_SPEED 40
 
 /* advanced settings */
-#define ANIM_FRAME_DURATION 200  // how long each frame lasts in ms
-#define ANIM_SIZE           96   // number of bytes in array. If you change sprites, minimize for adequate firmware size. max is 1024
+#    define ANIM_FRAME_DURATION 200 // how long each frame lasts in ms
+#    define ANIM_SIZE 96            // number of bytes in array. If you change sprites, minimize for adequate firmware size. max is 1024
 
 /* status variables */
 uint8_t current_wpm = 0;
-led_t led_usb_state;
-bool oled_enabled = true;
+led_t   led_usb_state;
+bool    oled_enabled = true;
 
-// Keyboard pet START 
+// Keyboard pet START
 // by HellTM
 
 /* timers */
@@ -285,7 +284,7 @@ static void render_luna(int LUNA_X, int LUNA_Y) {
         }
     }
 
-#if OLED_TIMEOUT > 0
+#    if OLED_TIMEOUT > 0
     /* the animation prevents the normal timeout from occuring */
     if (last_input_activity_elapsed() > OLED_TIMEOUT && last_led_activity_elapsed() > OLED_TIMEOUT) {
         oled_off();
@@ -293,7 +292,7 @@ static void render_luna(int LUNA_X, int LUNA_Y) {
     } else {
         oled_on();
     }
-#endif
+#    endif
 
     /* animation timer */
     if (timer_elapsed32(anim_timer) > ANIM_FRAME_DURATION) {
@@ -302,85 +301,84 @@ static void render_luna(int LUNA_X, int LUNA_Y) {
     }
 }
 
-// Keyboard pet END 
+// Keyboard pet END
 
-static void display_active_layer(led_t led_usb_state){
-  
-  switch (get_highest_layer(layer_state | default_layer_state)) {
-      case _COLEMAK_DH:
-          oled_clear();
-          oled_set_cursor(0, 0);
-          if(led_usb_state.caps_lock){
-            oled_write("COLEMAK DH", false);
-          }else{
-            oled_write("Colemak DH", false);
-          }
-          break;
-      case _QWERTY:
-          oled_clear();
-          oled_set_cursor(0, 0);
-          if(led_usb_state.caps_lock){
-            oled_write("QWERTY", false);
-          }else{
-            oled_write("Qwerty", false);
-          }
-          break;
-      case _GAMING:
-          oled_clear();
-          oled_set_cursor(0, 0);
-          if(led_usb_state.caps_lock){
-            oled_write("GAMING", false);
-          }else{
-            oled_write("Gaming", false);
-          }
-          break;
-      case _NAVI:
-          oled_clear();
-          oled_set_cursor(0, 1);
-          if(led_usb_state.caps_lock){
-            oled_write("NAVI & NUMPAD", false);
-          }else{
-            oled_write("Navi & numpad", false);
-          }
-          break;
-      case _SYMBOL:
-          oled_clear();
-          oled_set_cursor(0, 2);
-          if(led_usb_state.caps_lock){
-            oled_write("SYMBOLS & FKEYS", false);
-          }else{
-            oled_write("Symbols & fkeys", false);
-          }
-          break;
-      case _OPTIONS:
-          oled_clear();
-          oled_set_cursor(0, 3);
-          if(led_usb_state.caps_lock){
-            oled_write("KEYBOARD OPTIONS", false);
-          }else{
-            oled_write("Keyboard options", false);
-          }
-          break;
-      default:
-          oled_clear();
-          oled_set_cursor(0, 1);
-          if(led_usb_state.caps_lock){
-            oled_write("Undef caps", false);
-          }else{
-            oled_write("Undef", false);
-          };
-  }
-  if (led_usb_state.num_lock) {
-      oled_write(" [n]", false);
-      }
-  oled_write("\n", false);
+static void display_active_layer(led_t led_usb_state) {
+    switch (get_highest_layer(layer_state | default_layer_state)) {
+        case _COLEMAK_DH:
+            oled_clear();
+            oled_set_cursor(0, 0);
+            if (led_usb_state.caps_lock) {
+                oled_write("COLEMAK DH", false);
+            } else {
+                oled_write("Colemak DH", false);
+            }
+            break;
+        case _QWERTY:
+            oled_clear();
+            oled_set_cursor(0, 0);
+            if (led_usb_state.caps_lock) {
+                oled_write("QWERTY", false);
+            } else {
+                oled_write("Qwerty", false);
+            }
+            break;
+        case _GAMING:
+            oled_clear();
+            oled_set_cursor(0, 0);
+            if (led_usb_state.caps_lock) {
+                oled_write("GAMING", false);
+            } else {
+                oled_write("Gaming", false);
+            }
+            break;
+        case _NAVI:
+            oled_clear();
+            oled_set_cursor(0, 1);
+            if (led_usb_state.caps_lock) {
+                oled_write("NAVI & NUMPAD", false);
+            } else {
+                oled_write("Navi & numpad", false);
+            }
+            break;
+        case _SYMBOL:
+            oled_clear();
+            oled_set_cursor(0, 2);
+            if (led_usb_state.caps_lock) {
+                oled_write("SYMBOLS & FKEYS", false);
+            } else {
+                oled_write("Symbols & fkeys", false);
+            }
+            break;
+        case _OPTIONS:
+            oled_clear();
+            oled_set_cursor(0, 3);
+            if (led_usb_state.caps_lock) {
+                oled_write("KEYBOARD OPTIONS", false);
+            } else {
+                oled_write("Keyboard options", false);
+            }
+            break;
+        default:
+            oled_clear();
+            oled_set_cursor(0, 1);
+            if (led_usb_state.caps_lock) {
+                oled_write("Undef caps", false);
+            } else {
+                oled_write("Undef", false);
+            };
+    }
+    if (led_usb_state.num_lock) {
+        oled_write(" [n]", false);
+    }
+    oled_write("\n", false);
 }
 
-static void display_wpm(uint8_t current_wpm){
+static void display_wpm(uint8_t current_wpm) {
     oled_set_cursor(1, 2);
     char wpm_str[4];
 
-    wpm_str[3] = '\0'
+    wpm_str[3] = '\0';
     wpm_str[2] = '0' + current_wpm % 10;
     wpm_str[1] = '0' + (current_wpm /= 10) % 10;
     wpm_str[0] = '0' + current_wpm / 10;
@@ -388,61 +386,57 @@ static void display_wpm(uint8_t current_wpm){
 
     oled_set_cursor(1, 3);
     oled_write_ln("wpm", false);
-
 }
 
 // When you add source files to SRC in rules.mk, you can use functions.
 bool oled_task_user(void) {
-  if (!oled_enabled) {
-    if (is_oled_on()) {
-        oled_off();
-        return false;
+    if (!oled_enabled) {
+        if (is_oled_on()) {
+            oled_off();
+            return false;
+        }
     }
-  }
 
-  current_wpm = get_current_wpm();
-  led_usb_state = host_keyboard_led_state();
+    current_wpm   = get_current_wpm();
+    led_usb_state = host_keyboard_led_state();
 
+    if (is_keyboard_master()) {
+        display_wpm(current_wpm);
+        render_luna(0, 13);
 
-  if (is_keyboard_master()) {
-    display_wpm(current_wpm);
-    render_luna(0, 13);
-    
-  } else {
-    display_active_layer(led_usb_state);
-
-  }
+    } else {
+        display_active_layer(led_usb_state);
+    }
     return false;
 }
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
-  switch(keycode){
-    case KC_OLED:
-      if (record->event.pressed) {
-          oled_enabled = !oled_enabled;     // toggle oled_enabled
-          return true;
-      }
-    break;
-    
-    // Keyboard pet 
-    case KC_RCTL:
-        if (record->event.pressed) {
-            isSneaking = true;
-        } else {
-            isSneaking = false;
-        }
-    break;
-    case KC_SPC:
-        if (record->event.pressed) {
-            isJumping  = true;
-            showedJump = false;
-        } else {
-            isJumping = false;
-        }
-    break;
+    switch (keycode) {
+        case KC_OLED:
+            if (record->event.pressed) {
+                oled_enabled = !oled_enabled; // toggle oled_enabled
+                return true;
+            }
+            break;
 
-  }
-  return true;
+        // Keyboard pet
+        case KC_RCTL:
+            if (record->event.pressed) {
+                isSneaking = true;
+            } else {
+                isSneaking = false;
+            }
+            break;
+        case KC_SPC:
+            if (record->event.pressed) {
+                isJumping  = true;
+                showedJump = false;
+            } else {
+                isJumping = false;
+            }
+            break;
+    }
+    return true;
 }
 
 #endif // OLED_ENABLE
