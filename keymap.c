@@ -133,7 +133,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * |------+------+------+------+------+------|                    |------+------+------+------+------+------|
  * |      |      |GAMING|QWERTY|COLEMK|      |-------.    ,-------|      | BRI+ | BRI- | Vol+ | Vol- |      |
  * |------+------+------+------+------+------| PLAY  |    |  MUTE |------+------+------+------+------+------|
- * |      |      |      |      |      |      |-------|    |-------|      |UG TG | OLED |      |      |      |
+ * |      |      |      |      | NKRO |      |-------|    |-------|      |UG TG | OLED |      |      |      |
  * `-----------------------------------------/       /     \      \-----------------------------------------'
  *                   | LAlt | NAVI | LGUI | /Space  /       \Enter \  |BackSP|SYMBOL| RGUI |
  *                   |      |      |      |/       /         \      \ |      |      |      |
@@ -143,7 +143,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   _______, _______, _______,     _______,      _______,          _______,                   _______, UG_HUEU, UG_HUED, _______, _______, _______,
   _______, _______, _______,     KC_NUM,       KC_CAPS,          _______,                   _______, UG_SATU, UG_SATD, _______, _______, _______,
   _______, _______, DF(_GAMING), PDF(_QWERTY), PDF(_COLEMAK_DH), _______,                   _______, UG_VALU, UG_VALD, KC_VOLU, KC_VOLD, _______,
-  _______, _______, _______,     _______,      _______,          _______, KC_MPLY, KC_MUTE, _______, UG_TOGG, KC_OLED, _______, _______, _______,
+  _______, _______, _______,     _______,      NK_TOGG,          _______, KC_MPLY, KC_MUTE, _______, UG_TOGG, KC_OLED, _______, _______, _______,
                                  _______,      _______,          _______, _______, _______, _______, _______, _______
   )
 };
@@ -379,6 +379,18 @@ static void display_active_layer(led_t led_usb_state) {
     oled_write("\n", false);
 }
 
+static void display_options(void){
+    oled_set_cursor(2, 3);
+    if (keymap_config.nkro) {
+        oled_write(" n ", false);
+    } else {
+        oled_write(" 6 ", false);
+    }
+    oled_set_cursor(2, 4);
+    oled_write_ln("kro", false);
+
+}
+
 static void display_wpm(uint8_t current_wpm) {
     oled_set_cursor(2, 3);
     char wpm_str[4];
@@ -407,11 +419,18 @@ bool oled_task_user(void) {
     led_usb_state = host_keyboard_led_state();
 
     if (is_keyboard_master()) {
-        display_wpm(current_wpm);
+
+        if (get_highest_layer(layer_state) == _OPTIONS) {
+            display_options();
+        } else {
+            display_wpm(current_wpm);
+        }
         render_luna(0, 13);
 
     } else {
+
         display_active_layer(led_usb_state);
+
     }
     return false;
 }
