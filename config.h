@@ -20,7 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
 
-#define PRODUCT "lily58"
+#define PRODUCT "Lily58"
 
 /* Select hand configuration */
 #define EE_HANDS
