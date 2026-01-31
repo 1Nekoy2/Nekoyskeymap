@@ -373,7 +373,7 @@ static void display_active_layer(led_t led_usb_state) {
                 oled_write("Undef", false);
             };
     }
-    if (led_usb_state.num_lock) {
+    if (!led_usb_state.num_lock) {
         oled_write(" [n]", false);
     }
     oled_write("\n", false);
