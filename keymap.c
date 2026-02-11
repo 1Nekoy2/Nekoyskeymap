@@ -400,7 +400,7 @@ static void display_wpm(uint8_t current_wpm) {
 bool oled_task_user(void) {
 
     #if OLED_TIMEOUT > 0
-        if ((!oled_enabled) || (last_input_activity_elapsed() > OLED_TIMEOUT && last_led_activity_elapsed() > OLED_TIMEOUT)) {
+        if ((!oled_enabled) || (is_keyboard_master() && (last_input_activity_elapsed() > OLED_TIMEOUT && last_led_activity_elapsed() > OLED_TIMEOUT))) {
             if (is_oled_on()) {
                 oled_off();
                 return false;
