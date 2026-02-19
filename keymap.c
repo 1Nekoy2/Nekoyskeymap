@@ -416,7 +416,9 @@ bool oled_task_user(void) {
     #endif
 
     // ensure activation of both oleds
-    oled_on();
+    if (!is_keyboard_master() && !is_oled_on()) {
+        oled_on(); 
+    }
 
     current_wpm   = get_current_wpm();
     led_usb_state = host_keyboard_led_state();
