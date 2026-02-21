@@ -116,7 +116,6 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  *                   |      |      |      |/       /         \      \ |      |      |      |
  *                   `----------------------------'           '------''--------------------'
  */
-
 [_NAVI] = LAYOUT(
   _______, _______, _______, _______, _______, _______,                  _______, _______, _______, _______, _______, _______,
   KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,   KC_F6,                    _______, _______, _______, _______, KC_PGUP, KC_PGDN,
@@ -177,9 +176,10 @@ uint32_t anim_timer = 0;
 // current frame
 uint8_t current_frame = 0;
 
-bool isSneaking = false;
-bool isJumping  = false;
-bool showedJump = true;
+bool is_sneaking = false;
+bool is_jumping  = false;
+bool showed_jump = true;
+bool base_layar_change = false;
 
 oled_rotation_t oled_init_user(oled_rotation_t rotation) {
     if (is_keyboard_master()) {
@@ -253,14 +253,14 @@ static void render_luna(int LUNA_X, int LUNA_Y, uint8_t current_wpm, led_t led_u
     /* animation */
     void animate_luna(void) {
         /* jump */
-        if (isJumping || !showedJump) {
+        if (is_jumping || !showed_jump) {
             /* clear */
             oled_set_cursor(LUNA_X, LUNA_Y + 2);
             oled_write("     ", false);
 
             oled_set_cursor(LUNA_X, LUNA_Y - 1);
 
-            showedJump = true;
+            showed_jump = true;
         } else {
             /* clear */
             oled_set_cursor(LUNA_X, LUNA_Y - 1);
@@ -276,7 +276,7 @@ static void render_luna(int LUNA_X, int LUNA_Y, uint8_t current_wpm, led_t led_u
         if (led_usb_state.caps_lock) {
             oled_write_raw_P(bark[current_frame], ANIM_SIZE);
 
-        } else if (isSneaking) {
+        } else if (is_sneaking) {
             oled_write_raw_P(sneak[current_frame], ANIM_SIZE);
 
         } else if (current_wpm <= MIN_WALK_SPEED) {
@@ -371,6 +371,7 @@ static void display_active_layer(led_t led_usb_state) {
 }
 
 static void display_options(void){
+    // key rollover
     oled_set_cursor(2, 3);
     if (keymap_config.nkro) {
         oled_write(" n ", false);
@@ -379,7 +380,22 @@ static void display_options(void){
     }
     oled_set_cursor(2, 4);
     oled_write_ln("kro", false);
+    
+    // base layer
+    oled_set_cursor(2, 6);
+    switch(get_highest_layer(default_layer_state)){
+        case _COLEMAK_DH:
+            oled_write_ln("Col", false);
+            break;
 
+        case _QWERTY:
+            oled_write_ln("Qwe", false);
+            break;
+
+        case _GAMING:
+            oled_write_ln("Gam", false);
+            break;
+    }
 }
 
 static void display_wpm(uint8_t current_wpm) {
@@ -394,6 +410,8 @@ static void display_wpm(uint8_t current_wpm) {
 
     oled_set_cursor(2, 4);
     oled_write_ln("wpm", false);
+    oled_set_cursor(2, 6);
+    oled_write_ln("   ", false);
 }
 
 // When you add source files to SRC in rules.mk, you can use functions.
@@ -459,17 +477,18 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case LCTL_T(KC_ESC):
         case KC_LCTL:
             if (record->event.pressed) {
-                isSneaking = true;
+                is_sneaking = true;
             } else {
-                isSneaking = false;
+                is_sneaking = false;
             }
             break;
+
         case KC_SPC:
             if (record->event.pressed) {
-                isJumping  = true;
-                showedJump = false;
+                is_jumping  = true;
+                showed_jump = false;
             } else {
-                isJumping = false;
+                is_jumping = false;
             }
             break;
         #endif
